@@ -3,6 +3,8 @@ package onitama
 import "github.com/gorgonia/agogo/game"
 
 type OnitamaState struct {
+	pawnBoard  []game.Colour
+	kingBoard  []game.Colour
 	toMove     game.Player
 	moveNumber int
 }
