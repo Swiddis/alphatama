@@ -7,10 +7,13 @@ import (
 )
 
 type OnitamaState struct {
-	pawnBoard  []game.Colour
-	kingBoard  []game.Colour
-	toMove     game.Player
-	moveNumber int
+	pawnBoard   []game.Colour
+	kingBoard   []game.Colour
+	playerCards []game.Colour
+	neutralCard int
+	toMove      game.Player
+	moveNumber  int
+	zobrist     game.Zobrist
 }
 
 func (s *OnitamaState) BoardSize() (int, int) {
@@ -18,9 +21,17 @@ func (s *OnitamaState) BoardSize() (int, int) {
 }
 
 func (s *OnitamaState) Board() []game.Colour {
-	// TODO
-	// 25 squares + 33 cards held by players + 33 neutral cards
-	return make([]game.Colour, 91)
+	// 25 pawn squares + 25 king squares + 33 cards held by players + 33 neutral cards
+	board := make([]game.Colour, 116)
+	for i := 0; i < 25; i++ {
+		board[i] = s.pawnBoard[i]
+		board[i+25] = s.kingBoard[i]
+	}
+	for i := 0; i < 33; i++ {
+		board[i+50] = s.playerCards[i]
+	}
+	board[83+s.neutralCard] = game.White
+	return board
 }
 
 func (s *OnitamaState) ActionSpace() int {
@@ -29,8 +40,7 @@ func (s *OnitamaState) ActionSpace() int {
 }
 
 func (s *OnitamaState) Hash() game.Zobrist {
-	// TODO
-	return 0
+	return s.zobrist
 }
 
 func (s *OnitamaState) ToMove() game.Player {
