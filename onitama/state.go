@@ -1,4 +1,4 @@
-package alphatama
+package onitama
 
 import "github.com/gorgonia/agogo/game"
 
