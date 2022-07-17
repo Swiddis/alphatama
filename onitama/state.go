@@ -74,7 +74,24 @@ func (s *OnitamaState) AdditionalScore() float32 {
 }
 
 func (s *OnitamaState) Ended() (bool, game.Player) {
-	// TODO
+	if s.kingBoard[2] == game.White {
+		return true, game.Player(game.White)
+	} else if s.kingBoard[22] == game.Black {
+		return true, game.Player(game.Black)
+	}
+	var whiteKing, blackKing bool
+	for i := 0; i < 25; i++ {
+		if s.kingBoard[i] == game.White {
+			whiteKing = true
+		} else if s.kingBoard[i] == game.Black {
+			blackKing = true
+		}
+	}
+	if !whiteKing {
+		return true, game.Player(game.Black)
+	} else if !blackKing {
+		return true, game.Player(game.White)
+	}
 	return false, game.Player(game.None)
 }
 

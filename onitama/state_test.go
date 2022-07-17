@@ -69,3 +69,10 @@ func TestOnitamaState_Hash(t *testing.T) {
 	state := InitialState()
 	assert.Equal(t, game.Zobrist(1867648687), state.Hash())
 }
+
+func TestOnitamaState_Ended(t *testing.T) {
+	state := InitialState()
+	ended, winner := state.Ended()
+	assert.False(t, ended)
+	assert.Equal(t, game.Player(game.None), winner)
+}
