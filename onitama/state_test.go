@@ -64,3 +64,8 @@ func TestOnitamaState_Clone(t *testing.T) {
 	state2.SetToMove(game.Player(game.Black))
 	assert.False(t, state1.Eq(state2))
 }
+
+func TestOnitamaState_Hash(t *testing.T) {
+	state := InitialState()
+	assert.Equal(t, game.Zobrist(1867648687), state.Hash())
+}
