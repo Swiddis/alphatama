@@ -1,6 +1,10 @@
 package onitama
 
-import "github.com/gorgonia/agogo/game"
+import (
+	"reflect"
+
+	"github.com/gorgonia/agogo/game"
+)
 
 type OnitamaState struct {
 	pawnBoard  []game.Colour
@@ -96,7 +100,7 @@ func (s *OnitamaState) Fwd() {
 }
 
 func (s *OnitamaState) Eq(other game.State) bool {
-	return s == other.(*OnitamaState)
+	return reflect.DeepEqual(s, other.(*OnitamaState))
 }
 
 func (s *OnitamaState) Clone() game.State {
