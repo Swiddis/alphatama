@@ -176,9 +176,9 @@ func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
 		next.kingBoard[i] = s.kingBoard[i]
 	}
 	next.pawnBoard[end] = s.pawnBoard[start]
-	s.pawnBoard[start] = game.None
+	next.pawnBoard[start] = game.None
 	next.kingBoard[end] = s.kingBoard[start]
-	s.kingBoard[start] = game.None
+	next.kingBoard[start] = game.None
 
 	// Swapping cards
 	var cidx, count int

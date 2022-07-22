@@ -2,7 +2,6 @@ package onitama
 
 import (
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -42,7 +41,6 @@ func loadCards(filename string) {
 	if err != nil {
 		panic("Failed to load card file: " + err.Error())
 	}
-	fmt.Println(Cards)
 }
 
 func zobristHash(board []game.Colour) game.Zobrist {

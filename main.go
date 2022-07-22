@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/Swiddis/alphatama/onitama"
 	"github.com/gorgonia/agogo/game"
@@ -59,19 +60,28 @@ func main() {
 	initial := onitama.InitialState()
 	state := &initial
 	// fmt.Printf("%+v\n", initial)
-	for end, _ := state.Ended(); !end; {
+	count := 0
+	end, _ := state.Ended()
+	for !end {
 		fmt.Println(fen(*state))
+		perm := rand.Perm(1250)
 		for i := 0; i < 1250; i++ {
 			move := game.PlayerMove{
-				Single: game.Single(i),
-				Player: initial.ToMove(),
+				Single: game.Single(perm[i]),
+				Player: state.ToMove(),
 			}
-			if initial.Check(move) {
+			if state.Check(move) {
 				state = state.Apply(move).(*onitama.OnitamaState)
 				break
 			} else if i == 1249 {
 				panic("no legal moves")
 			}
 		}
+		count++
+		if count > 500 {
+			break
+		}
+		end, _ = state.Ended()
 	}
+	fmt.Println(fen(*state))
 }
