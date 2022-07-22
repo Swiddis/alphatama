@@ -16,6 +16,7 @@ type OnitamaState struct {
 	zobrist     game.Zobrist
 	prev        *OnitamaState
 	next        *OnitamaState
+	lastMove    int
 }
 
 func (s *OnitamaState) BoardSize() (int, int) {
@@ -163,6 +164,7 @@ func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
 	}
 	next.moveNumber = s.moveNumber + 1
 	next.zobrist = s.zobrist
+	next.lastMove = int(move.Single)
 	next.prev = s
 	s.next = next
 
@@ -198,20 +200,51 @@ func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
 }
 
 func (s *OnitamaState) Reset() {
-	// TODO
+	initial := InitialState()
+	s.pawnBoard = initial.pawnBoard
+	s.kingBoard = initial.kingBoard
+	s.playerCards = initial.playerCards
+	s.neutralCard = initial.neutralCard
+	s.toMove = initial.toMove
+	s.moveNumber = initial.moveNumber
+	s.zobrist = initial.zobrist
+	s.prev = nil
+	s.next = nil
+	s.lastMove = 0
 }
 
 func (s *OnitamaState) Historical(i int) []game.Colour {
-	// TODO
-	return []game.Colour{}
+	state := s
+	for j := s.moveNumber; j >= i; j-- {
+		state = state.prev
+	}
+	return state.Board()
 }
 
 func (s *OnitamaState) UndoLastMove() {
-	// TODO
+	s.next = s.Clone().(*OnitamaState)
+	s.pawnBoard = s.prev.pawnBoard
+	s.kingBoard = s.prev.kingBoard
+	s.playerCards = s.prev.playerCards
+	s.neutralCard = s.prev.neutralCard
+	s.toMove = s.prev.toMove
+	s.moveNumber = s.prev.moveNumber
+	s.zobrist = s.prev.zobrist
+	s.lastMove = s.prev.lastMove
+	s.prev = s.prev.prev
 }
 
 func (s *OnitamaState) Fwd() {
-	// TODO
+	s.prev = s.Clone().(*OnitamaState)
+	s.pawnBoard = s.next.pawnBoard
+	s.kingBoard = s.next.kingBoard
+	s.playerCards = s.next.playerCards
+	s.neutralCard = s.next.neutralCard
+	s.toMove = s.next.toMove
+	s.moveNumber = s.next.moveNumber
+	s.zobrist = s.next.zobrist
+	s.lastMove = s.next.lastMove
+	s.next = s.next.next
 }
 
 func (s *OnitamaState) Eq(other game.State) bool {
