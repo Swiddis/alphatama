@@ -1,13 +1,26 @@
 package onitama
 
 import (
+	"encoding/json"
 	"math/rand"
+	"os"
 	"time"
 
 	"github.com/gorgonia/agogo/game"
 )
 
+type CardMove struct {
+	dx int
+	dy int
+}
+
+type Card struct {
+	name  string
+	moves []CardMove
+}
+
 var zobristKeys [234]uint32
+var cards [34]Card
 
 func loadKeys(seed int64) {
 	rand.Seed(seed)
@@ -17,6 +30,17 @@ func loadKeys(seed int64) {
 		}
 	}
 	rand.Seed(time.Now().UnixNano())
+}
+
+func loadCards(filename string) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		panic("Failed to load card file: " + err.Error())
+	}
+	err = json.Unmarshal(data, &cards)
+	if err != nil {
+		panic("Failed to load card file: " + err.Error())
+	}
 }
 
 func zobristHash(board []game.Colour) game.Zobrist {
@@ -65,4 +89,5 @@ func InitialState() OnitamaState {
 
 func init() {
 	loadKeys(-2542287859469082068)
+	loadCards("../cards.json")
 }

@@ -110,7 +110,20 @@ func getMoveData(move game.PlayerMove) (card, start, end int) {
 	return card, start, end
 }
 
-func checkMoveCard(cardIdx, start, end int) bool {
+func checkMoveCard(cardIdx, start, end int, color game.Colour) bool {
+	sx, sy := start%25, start/25
+	ex, ey := end%25, end/25
+	dx := ex - sx
+	dy := sy - ey
+	if color == game.White {
+		dx *= -1
+		dy *= -1
+	}
+	for i := 0; i < len(cards[cardIdx].moves); i++ {
+		if cards[cardIdx].moves[i].dx == dx && cards[cardIdx].moves[i].dy == dy {
+			return true
+		}
+	}
 	return false
 }
 
@@ -135,11 +148,7 @@ func (s *OnitamaState) Check(move game.PlayerMove) bool {
 		}
 	}
 	// Check that the move is on the card
-	if !checkMoveCard(cidx, start, end) {
-		return false
-	}
-
-	return true
+	return checkMoveCard(cidx, start, end, game.Colour(move.Player))
 }
 
 func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
