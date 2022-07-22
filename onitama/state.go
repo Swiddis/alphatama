@@ -112,16 +112,16 @@ func getMoveData(move game.PlayerMove) (card, start, end int) {
 }
 
 func checkMoveCard(cardIdx, start, end int, color game.Colour) bool {
-	sx, sy := start%25, start/25
-	ex, ey := end%25, end/25
+	sx, sy := start%5, start/5
+	ex, ey := end%5, end/5
 	dx := ex - sx
 	dy := sy - ey
-	if color == game.White {
+	if color == game.Black {
 		dx *= -1
 		dy *= -1
 	}
-	for i := 0; i < len(Cards[cardIdx].moves); i++ {
-		if Cards[cardIdx].moves[i].dx == dx && Cards[cardIdx].moves[i].dy == dy {
+	for i := 0; i < len(Cards[cardIdx].Moves); i++ {
+		if Cards[cardIdx].Moves[i].Dx == dx && Cards[cardIdx].Moves[i].Dy == dy {
 			return true
 		}
 	}
@@ -142,7 +142,7 @@ func (s *OnitamaState) Check(move game.PlayerMove) bool {
 
 	// Get which card the move is using
 	var cidx, count int
-	for i := 0; i < 33; i++ {
+	for i := 0; i < 34; i++ {
 		if s.playerCards[i] == game.Colour(move.Player) && count <= card {
 			cidx = i
 			count++
@@ -182,7 +182,7 @@ func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
 
 	// Swapping cards
 	var cidx, count int
-	next.playerCards = make([]game.Colour, 33)
+	next.playerCards = make([]game.Colour, 34)
 	for i := 0; i < 34; i++ {
 		next.playerCards[i] = s.playerCards[i]
 		if s.playerCards[i] == game.Colour(move.Player) && count <= card {

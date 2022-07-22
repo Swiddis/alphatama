@@ -55,7 +55,23 @@ func fen(state onitama.OnitamaState) string {
 }
 
 func main() {
+	// var initial *onitama.OnitamaState
 	initial := onitama.InitialState()
+	state := &initial
 	// fmt.Printf("%+v\n", initial)
-	fmt.Println(fen(initial))
+	for end, _ := state.Ended(); !end; {
+		fmt.Println(fen(*state))
+		for i := 0; i < 1250; i++ {
+			move := game.PlayerMove{
+				Single: game.Single(i),
+				Player: initial.ToMove(),
+			}
+			if initial.Check(move) {
+				state = state.Apply(move).(*onitama.OnitamaState)
+				break
+			} else if i == 1249 {
+				panic("no legal moves")
+			}
+		}
+	}
 }

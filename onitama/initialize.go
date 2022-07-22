@@ -2,6 +2,7 @@ package onitama
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -10,13 +11,13 @@ import (
 )
 
 type CardMove struct {
-	dx int
-	dy int
+	Dx int
+	Dy int
 }
 
 type Card struct {
-	Name  string
-	moves []CardMove
+	Name  string     `json:"name"`
+	Moves []CardMove `json:"moves"`
 }
 
 var zobristKeys [234]uint32
@@ -41,6 +42,7 @@ func loadCards(filename string) {
 	if err != nil {
 		panic("Failed to load card file: " + err.Error())
 	}
+	fmt.Println(Cards)
 }
 
 func zobristHash(board []game.Colour) game.Zobrist {
