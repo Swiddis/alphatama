@@ -15,12 +15,12 @@ type CardMove struct {
 }
 
 type Card struct {
-	name  string
+	Name  string
 	moves []CardMove
 }
 
 var zobristKeys [234]uint32
-var cards [34]Card
+var Cards [34]Card
 
 func loadKeys(seed int64) {
 	rand.Seed(seed)
@@ -37,7 +37,7 @@ func loadCards(filename string) {
 	if err != nil {
 		panic("Failed to load card file: " + err.Error())
 	}
-	err = json.Unmarshal(data, &cards)
+	err = json.Unmarshal(data, &Cards)
 	if err != nil {
 		panic("Failed to load card file: " + err.Error())
 	}

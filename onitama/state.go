@@ -25,7 +25,7 @@ func (s *OnitamaState) BoardSize() (int, int) {
 
 func (s *OnitamaState) Board() []game.Colour {
 	// 25 pawn squares + 25 king squares + 33 cards held by players + 33 neutral cards
-	board := make([]game.Colour, 116)
+	board := make([]game.Colour, 118)
 	for i := 0; i < 25; i++ {
 		board[i] = s.pawnBoard[i]
 		board[i+25] = s.kingBoard[i]
@@ -120,8 +120,8 @@ func checkMoveCard(cardIdx, start, end int, color game.Colour) bool {
 		dx *= -1
 		dy *= -1
 	}
-	for i := 0; i < len(cards[cardIdx].moves); i++ {
-		if cards[cardIdx].moves[i].dx == dx && cards[cardIdx].moves[i].dy == dy {
+	for i := 0; i < len(Cards[cardIdx].moves); i++ {
+		if Cards[cardIdx].moves[i].dx == dx && Cards[cardIdx].moves[i].dy == dy {
 			return true
 		}
 	}
