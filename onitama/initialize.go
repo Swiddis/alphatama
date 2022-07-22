@@ -66,11 +66,12 @@ func initialPopulate(initial *OnitamaState) {
 	}
 	initial.kingBoard[2] = game.Black
 	initial.kingBoard[22] = game.White
-	initial.playerCards[0] = game.Black
-	initial.playerCards[1] = game.Black
-	initial.playerCards[2] = game.White
-	initial.playerCards[3] = game.White
-	initial.neutralCard = 4
+	cards := rand.Perm(34)
+	initial.playerCards[cards[0]] = game.Black
+	initial.playerCards[cards[1]] = game.Black
+	initial.playerCards[cards[2]] = game.White
+	initial.playerCards[cards[3]] = game.White
+	initial.neutralCard = cards[4]
 }
 
 func InitialState() OnitamaState {
