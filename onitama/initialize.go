@@ -89,5 +89,5 @@ func InitialState() OnitamaState {
 
 func init() {
 	loadKeys(-2542287859469082068)
-	loadCards("../cards.json")
+	loadCards("cards.json")
 }
