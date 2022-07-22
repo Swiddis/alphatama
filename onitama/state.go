@@ -14,6 +14,8 @@ type OnitamaState struct {
 	toMove      game.Player
 	moveNumber  int
 	zobrist     game.Zobrist
+	prev        *OnitamaState
+	next        *OnitamaState
 }
 
 func (s *OnitamaState) BoardSize() (int, int) {
@@ -104,9 +106,59 @@ func (s *OnitamaState) Check(move game.PlayerMove) bool {
 	return false
 }
 
+func getMoveData(move game.PlayerMove) (card, start, end int) {
+	if move.Single > 625 {
+		card = 1
+	}
+	start = (int(move.Single) / 25) % 25
+	end = int(move.Single) % 25
+	return card, start, end
+}
+
 func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
-	// TODO
-	return &OnitamaState{}
+	card, start, end := getMoveData(move)
+	next := &OnitamaState{}
+
+	// Metadata
+	if s.toMove == game.Player(game.White) {
+		next.toMove = game.Player(game.Black)
+	} else {
+		next.toMove = game.Player(game.White)
+	}
+	next.moveNumber = s.moveNumber + 1
+	next.zobrist = s.zobrist
+	next.prev = s
+	s.next = next
+
+	// Moving pieces
+	next.pawnBoard = make([]game.Colour, 25)
+	next.kingBoard = make([]game.Colour, 25)
+	for i := 0; i < 25; i++ {
+		next.pawnBoard[i] = s.pawnBoard[i]
+		next.kingBoard[i] = s.kingBoard[i]
+	}
+	next.pawnBoard[end] = s.pawnBoard[start]
+	s.pawnBoard[start] = game.None
+	next.kingBoard[end] = s.kingBoard[start]
+	s.kingBoard[start] = game.None
+
+	// Swapping cards
+	var cidx, count int
+	next.playerCards = make([]game.Colour, 33)
+	for i := 0; i < 33; i++ {
+		next.playerCards[i] = s.playerCards[i]
+		if s.playerCards[i] == game.Colour(move.Player) && count <= card {
+			cidx = i
+			count++
+		}
+	}
+	next.playerCards[cidx] = game.None
+	next.neutralCard = cidx
+	next.playerCards[s.neutralCard] = game.Colour(move.Player)
+
+	// TODO compute zobrist intelligently
+	next.zobrist = zobristHash(next.Board())
+	return next
 }
 
 func (s *OnitamaState) Reset() {
