@@ -29,10 +29,10 @@ func (s *OnitamaState) Board() []game.Colour {
 		board[i] = s.pawnBoard[i]
 		board[i+25] = s.kingBoard[i]
 	}
-	for i := 0; i < 33; i++ {
+	for i := 0; i < 34; i++ {
 		board[i+50] = s.playerCards[i]
 	}
-	board[83+s.neutralCard] = game.White
+	board[84+s.neutralCard] = game.White
 	return board
 }
 
@@ -101,11 +101,6 @@ func (s *OnitamaState) SetToMove(player game.Player) {
 	s.toMove = player
 }
 
-func (s *OnitamaState) Check(move game.PlayerMove) bool {
-	// TODO
-	return false
-}
-
 func getMoveData(move game.PlayerMove) (card, start, end int) {
 	if move.Single > 625 {
 		card = 1
@@ -113,6 +108,38 @@ func getMoveData(move game.PlayerMove) (card, start, end int) {
 	start = (int(move.Single) / 25) % 25
 	end = int(move.Single) % 25
 	return card, start, end
+}
+
+func checkMoveCard(cardIdx, start, end int) bool {
+	return false
+}
+
+func (s *OnitamaState) Check(move game.PlayerMove) bool {
+	card, start, end := getMoveData(move)
+
+	// Can only start from one of our pieces
+	if s.pawnBoard[start] != game.Colour(move.Player) && s.kingBoard[start] != game.Colour(move.Player) {
+		return false
+	}
+	// Avoid self-captures
+	if s.pawnBoard[end] == game.Colour(move.Player) || s.kingBoard[end] == game.Colour(move.Player) {
+		return false
+	}
+
+	// Get which card the move is using
+	var cidx, count int
+	for i := 0; i < 33; i++ {
+		if s.playerCards[i] == game.Colour(move.Player) && count <= card {
+			cidx = i
+			count++
+		}
+	}
+	// Check that the move is on the card
+	if !checkMoveCard(cidx, start, end) {
+		return false
+	}
+
+	return true
 }
 
 func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
@@ -145,7 +172,7 @@ func (s *OnitamaState) Apply(move game.PlayerMove) game.State {
 	// Swapping cards
 	var cidx, count int
 	next.playerCards = make([]game.Colour, 33)
-	for i := 0; i < 33; i++ {
+	for i := 0; i < 34; i++ {
 		next.playerCards[i] = s.playerCards[i]
 		if s.playerCards[i] == game.Colour(move.Player) && count <= card {
 			cidx = i

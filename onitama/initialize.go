@@ -7,7 +7,7 @@ import (
 	"github.com/gorgonia/agogo/game"
 )
 
-var zobristKeys [232]uint32
+var zobristKeys [234]uint32
 
 func loadKeys(seed int64) {
 	rand.Seed(seed)
@@ -53,7 +53,7 @@ func InitialState() OnitamaState {
 	initial := OnitamaState{
 		pawnBoard:   make([]game.Colour, 25),
 		kingBoard:   make([]game.Colour, 25),
-		playerCards: make([]game.Colour, 33),
+		playerCards: make([]game.Colour, 34),
 		neutralCard: 4,
 		toMove:      game.Player(game.White),
 		moveNumber:  0,
