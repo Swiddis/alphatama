@@ -59,8 +59,7 @@ func (s *OnitamaState) MoveNumber() int {
 }
 
 func (s *OnitamaState) LastMove() game.PlayerMove {
-	// TODO
-	return game.PlayerMove{}
+	return game.PlayerMove{Single: game.Single(s.lastMove), Player: s.prev.toMove}
 }
 
 func (s *OnitamaState) Handicap() int {
@@ -129,6 +128,9 @@ func checkMoveCard(cardIdx, start, end int, color game.Colour) bool {
 }
 
 func (s *OnitamaState) Check(move game.PlayerMove) bool {
+	if move.Single < 0 {
+		return false
+	}
 	card, start, end := getMoveData(move)
 
 	// Can only start from one of our pieces
